@@ -43,8 +43,8 @@ public class Perceptron extends PerceptronAbstract {
         while (!allCorrect) {
             error = false;
             for (int i = 0; i < input.length ; i++) {
-                if (hasError(input[i])) { // 存在误分类点，则以此点梯度下降更新w,b
-                    gradientDescent(input[i]);
+                if (hasError(i)) { // 存在误分类点，则以此点梯度下降更新w,b
+                    gradientDescent(i);
                     error = true;
                     break;
                 }
@@ -59,11 +59,12 @@ public class Perceptron extends PerceptronAbstract {
 
     /**
      * 判断是否有误分类点 yi * (w * xi + b) <=0 为误分类
-     * @param sample 实例点
+     * @param sampleIndex 实例点索引
      * @return true有 false无
      */
-    protected boolean hasError(double[] sample) {
+    protected boolean hasError(int sampleIndex) {
         double temp = 0.0;
+        double[] sample = input[sampleIndex];
         int len = sample.length;
 
         for (int i = 0; i < len - 1 ; i++) {
@@ -75,9 +76,10 @@ public class Perceptron extends PerceptronAbstract {
 
     /**
      * 根据随机梯度下降算法更新
-     * @param sample 一个实例点
+     * @param sampleIndex 一个实例点
      */
-    protected void gradientDescent(double[] sample) {
+    protected void gradientDescent(int sampleIndex) {
+        double[] sample = input[sampleIndex];
         int yIndex = sample.length - 1;
 
         for (int i = 0; i < w.length; i++) {
@@ -98,22 +100,23 @@ public class Perceptron extends PerceptronAbstract {
 
     public static void main( String[] args )
     {
-        //double[][] data = { {3, 3, 1}, {4, 3, 1}, {1, 1, -1} };
-        double[][] data = {
+        double[][] data = { {3, 3, 1}, {4, 3, 1}, {1, 1, -1} };
+        /*double[][] data = {
                 {-0.4, 0.3, 1}, {-0.3, -0.1, 1}, {-0.2, 0.4, 1},
                 {-0.1, 0.1, 1}, {0.1, -0.5, -1}, {0.2, -0.9, -1},
                 {0.3, 0.2, -1}, {0.4, -0.6, -1}
-        };
+        };*/
 
-        Perceptron per = new Perceptron(data, 1, 0);
+        //Perceptron per = new Perceptron(data);
+        PerceptronDual per = new PerceptronDual(data);
         per.train();
 
         // 测试分类结果准确性
-        double[] w = per.getW();
+        /*double[] w = per.getW();
         double bias = per.getBias();
 
         for (int i = 0; i < data.length; i++) {
             System.out.println(w[0]*data[i][0] + w[1]*data[i][1] + bias);
-        }
+        }*/
     }
 }

@@ -29,7 +29,7 @@ public abstract class PerceptronAbstract {
 
     public abstract void train();
 
-    protected abstract boolean hasError(double[] sample);
+    protected abstract boolean hasError(int sampleIndex);
 
-    protected abstract void gradientDescent(double[] sample);
+    protected abstract void gradientDescent(int sampleIndex);
 }
