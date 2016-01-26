@@ -7,19 +7,11 @@ import java.util.Arrays;
  * Perceptron 感知机学习算法原始形式
  * 学习模型 f(x) = sign(w * x + b)
  */
-public class Perceptron
-{
-    /**  偏置值bias */
-    private double bias;
+public class Perceptron extends PerceptronAbstract {
 
     /** 权值向量weight, 维度根据训练数据x的维度设定 */
     private double[] w;
 
-    /** 学习率，用于梯度下降算法，值在0-1间 */
-    private double learningRate;
-
-    /** 输入训练集 */
-    private double[][] input;
     /**
      * 感知机构造器
      * @param data 输入训练集，（x,y）, 最后一项为yi值
@@ -27,19 +19,14 @@ public class Perceptron
      *             还可加一个实例点类Point { {4,3}, 1}
      */
     public Perceptron(double[][] data) {
-        this.bias = 0;
-        this.learningRate = 1;
+        super(data);
 
         int wDim = data[0].length - 1;
         this.w = new double[wDim];
-
-        this.input = data;
     }
 
     public Perceptron(double[][] data, double learningRate, double bias) {
-        this.learningRate = learningRate;
-        this.bias = bias;
-        this.input = data;
+        super(bias, learningRate, data);
 
         int wDim = data[0].length - 1;
         this.w = new double[wDim];
@@ -75,7 +62,7 @@ public class Perceptron
      * @param sample 实例点
      * @return true有 false无
      */
-    private boolean hasError(double[] sample) {
+    protected boolean hasError(double[] sample) {
         double temp = 0.0;
         int len = sample.length;
 
@@ -90,7 +77,7 @@ public class Perceptron
      * 根据随机梯度下降算法更新
      * @param sample 一个实例点
      */
-    private void gradientDescent(double[] sample) {
+    protected void gradientDescent(double[] sample) {
         int yIndex = sample.length - 1;
 
         for (int i = 0; i < w.length; i++) {
