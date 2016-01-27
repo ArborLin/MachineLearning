@@ -1,4 +1,3 @@
-
 package com.arbor.ml;
 
 import java.util.Arrays;
@@ -6,6 +5,7 @@ import java.util.Arrays;
 /**
  * Perceptron 感知机学习算法原始形式
  * 学习模型 f(x) = sign(w * x + b)
+ * 梯度下降更新w,b
  */
 public class Perceptron extends PerceptronAbstract {
 
@@ -33,31 +33,6 @@ public class Perceptron extends PerceptronAbstract {
     }
 
     /**
-     * 学习算法，循环取训练集中数据判断误分类点，并更新w,b 直至没有误分类点
-     * 须针对线性可分数据集，应有一个误分类次数上限，防止陷入死循环
-     */
-    public void train() {
-        boolean error;
-        boolean allCorrect = false;
-
-        while (!allCorrect) {
-            error = false;
-            for (int i = 0; i < input.length ; i++) {
-                if (hasError(i)) { // 存在误分类点，则以此点梯度下降更新w,b
-                    gradientDescent(i);
-                    error = true;
-                    break;
-                }
-            }
-            if (!error)
-                allCorrect = true;
-        }
-
-        System.out.println(Arrays.toString(w));
-        System.out.println(bias);
-    }
-
-    /**
      * 判断是否有误分类点 yi * (w * xi + b) <=0 为误分类
      * @param sampleIndex 实例点索引
      * @return true有 false无
@@ -76,6 +51,8 @@ public class Perceptron extends PerceptronAbstract {
 
     /**
      * 根据随机梯度下降算法更新
+     * w <- w + learningRate * y(i) * x(i)  注x(i)为向量
+     * b <- b + learningRate * y(i)
      * @param sampleIndex 一个实例点
      */
     protected void gradientDescent(int sampleIndex) {
@@ -94,12 +71,7 @@ public class Perceptron extends PerceptronAbstract {
         return w;
     }
 
-    public double getBias() {
-        return bias;
-    }
-
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ) {
         double[][] data = { {3, 3, 1}, {4, 3, 1}, {1, 1, -1} };
         /*double[][] data = {
                 {-0.4, 0.3, 1}, {-0.3, -0.1, 1}, {-0.2, 0.4, 1},
@@ -107,10 +79,17 @@ public class Perceptron extends PerceptronAbstract {
                 {0.3, 0.2, -1}, {0.4, -0.6, -1}
         };*/
 
-        //Perceptron per = new Perceptron(data);
-        PerceptronDual per = new PerceptronDual(data);
+        PerceptronAbstract per = new PerceptronDual(data);
+        //PerceptronDual per = new PerceptronDual(data);
         per.train();
 
+        double[] w = per.getW();
+        double bias = per.getBias();
+        double[] alpha = ((PerceptronDual) per).getAlpha();
+
+        System.out.println(Arrays.toString(w));
+        System.out.println(bias);
+        System.out.println(Arrays.toString(alpha));
         // 测试分类结果准确性
         /*double[] w = per.getW();
         double bias = per.getBias();
